@@ -7,6 +7,8 @@ router.post('/list',ctrl.list)
 router.post('/update',ctrl.update)
 router.post('/remove',ctrl.remove)
 router.post('/like',ctrl.like)
+router.post('/getTimelinePost',ctrl.getTimelinePost)
+
 
 
 module.exports=router

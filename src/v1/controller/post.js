@@ -163,9 +163,39 @@ exports.like = async function (req, res) {
 };
   
   
-  
-  
-  
-  
-  
-  
+exports.getTimelinePost=async function (req,res){
+    try{
+        const postId=req.body.postId
+        if (!ObjectID.isValid(postId)) {
+            return res.send({ status: 0, message: "Invalid userId", data: [] });
+        }
+
+        const postmodel=await modelPost.PostModel.find({_id:postId})
+        const usermodel=await modelUser.UserModel.aggregate([
+            // {
+            //     $match:{
+            //         _id:new mongoose.Types.ObjectId(postId)
+            //     }
+            // },
+            {
+                $lookup:{
+                    from:"users",
+                    localField:"following",
+                    foreignField:"userId",
+                    as:"followingPosts"
+                }
+            },
+            {
+                $project:{
+                    followingPosts:1,
+                    _id:0
+                }
+            }
+        ])
+// console.log(usermodel)
+        res.send({status:1,message:"",data:postmodel.concat(usermodel)})
+
+    }catch(err){
+        res.send({message:err.message})
+    }
+}
